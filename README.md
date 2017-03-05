@@ -1,5 +1,8 @@
-## Bike stats
+# Bike stats
+![Build Status](https://travis-ci.org/MomoTheCat/statsSpring.svg?branch=master)
+Application collecting data about bies in Lodz, Poland.
 
-Tomcat + mongoDB
+## SetUp
+You need to set MONGOLAB_URI evnironmental variable to your own database!
 
-Edit application.properites before first run!
+
