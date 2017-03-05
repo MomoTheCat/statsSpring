@@ -1,16 +1,12 @@
 package pl.momothecat.stats.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 /**
  * Created by szymon on 04.03.2017.
  */
-@JsonDeserialize(builder=SimpleStation.Builder.class)
 public class SimpleStation {
 
     public static final String MONGO_ID = "mongoId";
@@ -63,6 +59,37 @@ public class SimpleStation {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SimpleStation)) return false;
+
+        SimpleStation that = (SimpleStation) o;
+
+        if (Double.compare(that.latitude, latitude) != 0) return false;
+        if (Double.compare(that.longitude, longitude) != 0) return false;
+        if (mongoId != null ? !mongoId.equals(that.mongoId) : that.mongoId != null) return false;
+        if (idNetwork != null ? !idNetwork.equals(that.idNetwork) : that.idNetwork != null) return false;
+        if (extras != null ? !extras.equals(that.extras) : that.extras != null) return false;
+        return name != null ? name.equals(that.name) : that.name == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = mongoId != null ? mongoId.hashCode() : 0;
+        result = 31 * result + (idNetwork != null ? idNetwork.hashCode() : 0);
+        result = 31 * result + (extras != null ? extras.hashCode() : 0);
+        temp = Double.doubleToLongBits(latitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(longitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "SimpleStation{" +
                 "mongoId='" + mongoId +
@@ -78,7 +105,6 @@ public class SimpleStation {
         return new SimpleStation.Builder();
     }
 
-    @JsonPOJOBuilder(buildMethodName="build", withPrefix="set")
     public static class Builder {
         private String mongoId;
         private String idNetwork;

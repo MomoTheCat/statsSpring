@@ -1,15 +1,11 @@
 package pl.momothecat.stats.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
 import java.util.Arrays;
 import java.util.Date;
 
 /**
  * Created by szymon on 04.03.2017.
  */
-@JsonDeserialize(builder = SimpleExtra.Builder.class)
 public class SimpleExtra {
 
     private int slots;
@@ -58,6 +54,36 @@ public class SimpleExtra {
         return date;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SimpleExtra)) return false;
+
+        SimpleExtra that = (SimpleExtra) o;
+
+        if (slots != that.slots) return false;
+        if (uid != that.uid) return false;
+        if (number != that.number) return false;
+        if (empty_slots != that.empty_slots) return false;
+        if (free_bikes != that.free_bikes) return false;
+        if (!Arrays.equals(bike_uids, that.bike_uids)) return false;
+        return date != null ? date.equals(that.date) : that.date == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = slots;
+        result = 31 * result + Arrays.hashCode(bike_uids);
+        result = 31 * result + uid;
+        result = 31 * result + number;
+        result = 31 * result + empty_slots;
+        result = 31 * result + free_bikes;
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        return result;
+    }
+
     @Override
     public String toString() {
         return "SimpleExtra{" +
@@ -75,7 +101,6 @@ public class SimpleExtra {
         return new SimpleExtra.Builder();
     }
 
-    @JsonPOJOBuilder(buildMethodName = "build", withPrefix = "set")
     public static class Builder {
 
         private int slots;

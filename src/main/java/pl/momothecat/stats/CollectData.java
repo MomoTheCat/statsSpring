@@ -157,7 +157,7 @@ public class CollectData {
     }
 
     private <T> void checkIfListNotNull(List<T> elements) {
-        if (elements == null || elements.size() == 0)
+        if (elements == null || elements.isEmpty())
             throw new NullPointerException("List must not be null");
     }
 
