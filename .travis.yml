@@ -6,3 +6,5 @@ services:
 deploy:
   provider: heroku
   api_key: d642590e-dcf2-4912-8f5c-065514d6d916
+before_install:
+  - chmod +x mvnw
