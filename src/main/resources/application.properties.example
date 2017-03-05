@@ -1,3 +1,0 @@
-spring.data.mongodb.uri= mongodb://<login>:<passowrd>@ds041160.mlab.com:41160/satellite
-bike.uri= https://api.citybik.es/v2/networks/lodzki-rower-publiczny
-minutesto.schedule = 1
