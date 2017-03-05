@@ -2,4 +2,7 @@ language: java
 jdk:
   - oraclejdk8
 services:
-  -mongodb
+  - mongodb
+deploy:
+  provider: heroku
+  api_key: d642590e-dcf2-4912-8f5c-065514d6d916

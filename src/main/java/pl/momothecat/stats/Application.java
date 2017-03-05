@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
-    @Value("${minutes.to.schedule}")
-    private int minutesToSchedule;
+    @Value("${minutesto.schedule}")
+    private int minutesToSchedule = 10;
 
     @Autowired
     @SuppressWarnings("SpringJavaAutowiringInspection")
