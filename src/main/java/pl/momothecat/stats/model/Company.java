@@ -1,14 +1,19 @@
 package pl.momothecat.stats.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonRootName;
-import org.springframework.data.annotation.Id;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
 /**
  * Created by szymon on 01.03.2017.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonRootName(value = "network")
+@Getter
+@ToString
 public class Company {
 
     /**
@@ -39,72 +44,28 @@ public class Company {
      * {"empty_slots":0,
      */
 
-    @Id
-    private String href;
 
     private String id;
+    private String href;
     private LicenseBean license;
     private LocationBean location;
     private String name;
     private List<String> company;
     private List<StationsBean> stations;
 
-    public String getHref() {
-        return href;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public LicenseBean getLicense() {
-        return license;
-    }
-
-    public LocationBean getLocation() {
-        return location;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<String> getCompany() {
-        return company;
-    }
-
-    public List<StationsBean> getStations() {
-        return stations;
-    }
-
-
-    @Override
-    public String toString() {
-        return "Company{" +
-                "href='" + href + '\'' +
-                ", id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
+    @Getter
+    @ToString
     public static class LicenseBean {
         /**
          * name : Open Licence
          * url : https://developer.jcdecaux.com/#/opendata/licence
          */
-
         private String name;
         private String url;
-
-        public String getName() {
-            return name;
-        }
-
-        public String getUrl() {
-            return url;
-        }
     }
 
+    @Getter
+    @ToString
     public static class LocationBean {
         /**
          * city : Paris
@@ -117,24 +78,10 @@ public class Company {
         private String country;
         private double latitude;
         private double longitude;
-
-        public String getCity() {
-            return city;
-        }
-
-        public String getCountry() {
-            return country;
-        }
-
-        public double getLatitude() {
-            return latitude;
-        }
-
-        public double getLongitude() {
-            return longitude;
-        }
     }
 
+    @Getter
+    @ToString
     public static class StationsBean {
         /**
          * empty_slots : 0
@@ -150,47 +97,14 @@ public class Company {
         private int empty_slots;
         private ExtraBean extra;
         private int free_bikes;
-
-        @Id
         private String id;
         private double latitude;
         private double longitude;
         private String name;
         private String timestamp;
 
-        public int getEmpty_slots() {
-            return empty_slots;
-        }
-
-        public ExtraBean getExtra() {
-            return extra;
-        }
-
-        public int getFree_bikes() {
-            return free_bikes;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public double getLatitude() {
-            return latitude;
-        }
-
-        public double getLongitude() {
-            return longitude;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-
-        public String getTimestamp() {
-            return timestamp;
-        }
-
+        @Getter
+        @ToString
         public static class ExtraBean {
             /**
              * address : 1 RUE BUFFON - 75005 PARIS
@@ -211,44 +125,6 @@ public class Company {
             private int uid;
             private int number;
             private int[] bike_uids;
-
-
-            public String getAddress() {
-                return address;
-            }
-
-            public boolean isBanking() {
-                return banking;
-            }
-
-            public boolean isBonus() {
-                return bonus;
-            }
-
-            public long getLast_update() {
-                return last_update;
-            }
-
-            public int getSlots() {
-                return slots;
-            }
-
-            public String getStatus() {
-                return status;
-            }
-
-            public int getUid() {
-                return uid;
-            }
-
-            public int[] getBike_uids() {
-                return bike_uids;
-            }
-
-            public int getNumber() {
-                return number;
-            }
-
         }
     }
 

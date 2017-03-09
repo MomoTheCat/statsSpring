@@ -1,11 +1,19 @@
 package pl.momothecat.stats.model;
 
-import java.util.Arrays;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
 import java.util.Date;
 
 /**
  * Created by szymon on 04.03.2017.
  */
+@Getter
+@ToString
+@EqualsAndHashCode
+@AllArgsConstructor
 public class SimpleExtra {
 
     private int slots;
@@ -15,87 +23,6 @@ public class SimpleExtra {
     private int empty_slots;
     private int free_bikes;
     private Date date;
-
-    private SimpleExtra(int slots, int[] bike_uids, int uid, int number, int empty_slots, int free_bikes, Date date) {
-        this.slots = slots;
-        this.bike_uids = bike_uids;
-        this.uid = uid;
-        this.number = number;
-        this.empty_slots = empty_slots;
-        this.free_bikes = free_bikes;
-        this.date = date;
-    }
-
-    public int getSlots() {
-        return slots;
-    }
-
-    public int[] getBike_uids() {
-        return bike_uids;
-    }
-
-    public int getUid() {
-        return uid;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public int getEmpty_slots() {
-        return empty_slots;
-    }
-
-    public int getFree_bikes() {
-        return free_bikes;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SimpleExtra)) return false;
-
-        SimpleExtra that = (SimpleExtra) o;
-
-        if (slots != that.slots) return false;
-        if (uid != that.uid) return false;
-        if (number != that.number) return false;
-        if (empty_slots != that.empty_slots) return false;
-        if (free_bikes != that.free_bikes) return false;
-        if (!Arrays.equals(bike_uids, that.bike_uids)) return false;
-        return date != null ? date.equals(that.date) : that.date == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = slots;
-        result = 31 * result + Arrays.hashCode(bike_uids);
-        result = 31 * result + uid;
-        result = 31 * result + number;
-        result = 31 * result + empty_slots;
-        result = 31 * result + free_bikes;
-        result = 31 * result + (date != null ? date.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "SimpleExtra{" +
-                "slots=" + slots +
-                ", bike_uids=" + Arrays.toString(bike_uids) +
-                ", uid=" + uid +
-                ", number=" + number +
-                ", empty_slots=" + empty_slots +
-                ", free_bikes=" + free_bikes +
-                ", date=" + date +
-                '}';
-    }
 
     public static SimpleExtra.Builder newBuilder() {
         return new SimpleExtra.Builder();

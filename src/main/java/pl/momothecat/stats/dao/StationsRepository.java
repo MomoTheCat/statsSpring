@@ -1,4 +1,4 @@
-package pl.momothecat.stats;
+package pl.momothecat.stats.dao;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import pl.momothecat.stats.model.SimpleStation;
@@ -9,7 +9,6 @@ import pl.momothecat.stats.model.SimpleStation;
 
 public interface StationsRepository extends MongoRepository<SimpleStation, String> {
 
-    SimpleStation findByName(String firstName);
     SimpleStation findByIdNetwork(String networkId);
 
 }

@@ -1,4 +1,4 @@
-package pl.momothecat.stats;
+package pl.momothecat.stats.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;

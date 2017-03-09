@@ -7,18 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import pl.momothecat.stats.dao.StationsRepository;
+import pl.momothecat.stats.dao.StationsRepositoryTemplate;
 import pl.momothecat.stats.model.Company;
 import pl.momothecat.stats.model.SimpleExtra;
 import pl.momothecat.stats.model.SimpleStation;
 
 import javax.inject.Singleton;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -38,6 +37,8 @@ public class CollectData {
 
     private static ObjectMapper mapper;
 
+    private final AtomicLong counter = new AtomicLong();
+
     static {
         mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -54,85 +55,66 @@ public class CollectData {
     private StationsRepositoryTemplate repositoryTemplate;
 
     public void schedule(int minutes) {
+        saveToDatabase(getRequest(bikeUri));
 
-        getRequest(bikeUri, true);
-
-        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
-
-        final AtomicLong counter = new AtomicLong();
-        scheduledExecutorService.scheduleAtFixedRate(() -> {
-
-            System.out.println("hi there at: " + new java.util.Date()
-                    + ", updated : " + counter.incrementAndGet() + " times.");
-
-            getRequest(bikeUri, false);
+        Executors.newScheduledThreadPool(2).scheduleAtFixedRate(() -> {
+            updateStationsData(getRequest(bikeUri));
         }, 0, minutes, TimeUnit.MINUTES);
     }
 
-    public void getRequest(String urlToRead, Boolean firstTime) {
-        try {
-            URL url = new URL(urlToRead);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setReadTimeout(1000);
+    public List<Company.StationsBean> getRequest(String urlToRead) {
 
-            parseAndSaveToDatabase(conn, firstTime);
+        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+        messageConverter.setPrettyPrint(false);
+        messageConverter.setObjectMapper(mapper);
 
-        } catch (MalformedURLException e) {
-            logger.debug(e.toString());
-        } catch (IOException e) {
-            logger.debug(e.toString());
-        }
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().removeIf(m -> m.getClass().getName()
+                .equals(MappingJackson2HttpMessageConverter.class.getName()));
+        restTemplate.getMessageConverters().add(messageConverter);
+
+        ResponseEntity<Company> response = restTemplate.getForEntity(urlToRead, Company.class);
+        logger.info("Request status: " + response.getStatusCodeValue());
+
+        List<Company.StationsBean> stations = getStationsBeen(response);
+
+        return stations;
     }
 
-    private void parseAndSaveToDatabase(HttpURLConnection conn, Boolean firstTime) throws IOException {
-        Company company = readData(conn);
-        List<Company.StationsBean> stations = company.getStations();
-        if (firstTime) {
-            saveToDatabase(stations);
-        } else {
-            updateStationsData(stations);
-        }
-    }
-
-    private Company readData(HttpURLConnection conn) throws IOException {
-
-        StringBuilder result = new StringBuilder();
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String line;
-        while ((line = rd.readLine()) != null) {
-            result.append(line);
-        }
-        rd.close();
-
-        Company company = mapper.readValue(result.toString(), Company.class);
+    private List<Company.StationsBean> getStationsBeen(ResponseEntity<Company> response) {
+        Company company = response.getBody();
         checkIfValueNotNull(company);
 
-        return mapper.readValue(result.toString(), Company.class);
+        List<Company.StationsBean> stations = company.getStations();
+        checkIfListNotNull(stations);
+        return stations;
     }
 
+
     private void saveToDatabase(List<Company.StationsBean> stations) {
-        checkIfListNotNull(stations);
 
-        for (Company.StationsBean station : stations) {
+        stations.stream()
+                .filter(Objects::nonNull)
+                .filter(station -> !repositoryTemplate.ifExistsNetworkId(station.getId()))
+                .forEach(station -> {
+                    SimpleStation st = SimpleStation.newBuilder()
+                            .setIdNetwork(station.getId())
+                            .setName(station.getName())
+                            .setExtras(Arrays.asList(createExtras(station)))
+                            .setLatitude(station.getLatitude())
+                            .setLongitude(station.getLongitude())
+                            .build();
 
-            SimpleStation st = SimpleStation.newBuilder()
-                    .setIdNetwork(station.getId())
-                    .setName(station.getName())
-                    .setExtras(Arrays.asList(createExtras(station)))
-                    .setLatitude(station.getLatitude())
-                    .setLongitude(station.getLongitude())
-                    .build();
+                    repository.save(st);
+                });
 
-            if (!repositoryTemplate.ifExistsNetworkId(station.getId()))
-                repository.save(st);
-        }
         logger.info("Data saved");
     }
 
     private void updateStationsData(List<Company.StationsBean> stations) {
-        logger.info("update at: " + new java.util.Date());
-        checkIfListNotNull(stations);
+
+        logger.info("At: " + new java.util.Date()
+                + ", updating DB for the " + counter.incrementAndGet() + " times.");
 
         for (Company.StationsBean station : stations)
             repositoryTemplate.pushMethod(station.getId(), createExtras(station));
