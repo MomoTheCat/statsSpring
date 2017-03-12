@@ -16,8 +16,6 @@ import pl.momothecat.stats.dao.StationsRepositoryTemplate;
 import pl.momothecat.stats.model.Company;
 import pl.momothecat.stats.model.SimpleExtra;
 import pl.momothecat.stats.model.SimpleStation;
-import pl.momothecat.stats.utils.exceptions.InvalidElementException;
-import pl.momothecat.stats.utils.exceptions.InvalidListException;
 
 import javax.inject.Singleton;
 import java.util.*;
@@ -73,7 +71,7 @@ public class CollectData {
         return getStationsBeen(response);
     }
 
-    private RestTemplate setupCustomMapperToRestTemplate() {
+    protected RestTemplate setupCustomMapperToRestTemplate() {
         MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
         messageConverter.setPrettyPrint(false);
         messageConverter.setObjectMapper(mapper);
@@ -130,7 +128,7 @@ public class CollectData {
     }
 
 
-    private SimpleExtra createExtras(Company.StationsBean station) {
+    protected SimpleExtra createExtras(Company.StationsBean station) {
         return SimpleExtra.newBuilder()
                 .setDate(new Date())
                 .setSlots(station.getExtra().getSlots())
