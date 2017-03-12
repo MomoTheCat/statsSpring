@@ -16,6 +16,7 @@ import pl.momothecat.stats.dao.StationsRepositoryTemplate;
 import pl.momothecat.stats.model.Company;
 import pl.momothecat.stats.model.SimpleExtra;
 import pl.momothecat.stats.model.SimpleStation;
+import pl.momothecat.stats.utils.exceptions.InvalidListException;
 
 import javax.inject.Singleton;
 import java.util.*;
@@ -88,7 +89,15 @@ public class CollectData {
         checkIfValueNotNull(company);
 
         List<Company.StationsBean> stations = company.getStations();
-        checkIfListNotNull(stations);
+        try {
+            checkIfListNotNull(stations);
+        } catch (InvalidListException e) {
+            logger.info(e.toString());
+            e.printStackTrace();
+            logger.error("Process interupted, exception occured. Returning empty list");
+            return  Collections.emptyList();
+        }
+
         return stations;
     }
 

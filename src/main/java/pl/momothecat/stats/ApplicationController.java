@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pl.momothecat.stats.dao.StationsRepository;
 import pl.momothecat.stats.model.SimpleExtra;
 import pl.momothecat.stats.model.SimpleStation;
+import pl.momothecat.stats.utils.exceptions.InvalidListException;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -75,7 +76,14 @@ public class ApplicationController {
     }
 
     protected void sortByFreeBikes(List<SimpleStation> simpleStation) {
-        checkIfListNotNull(simpleStation);
+        try {
+            checkIfListNotNull(simpleStation);
+        } catch (InvalidListException e) {
+            logger.info(e.toString());
+            e.printStackTrace();
+            logger.error("Process interupted, exception occured.");
+            return;
+        }
 
         Collections.sort(simpleStation, new Comparator<SimpleStation>() {
             @Override

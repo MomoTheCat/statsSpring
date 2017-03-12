@@ -7,6 +7,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.momothecat.stats.model.SimpleExtra;
 import pl.momothecat.stats.model.SimpleStation;
+import pl.momothecat.stats.utils.exceptions.InvalidListException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,13 +67,13 @@ public class ApplicationControllerTest {
         assertTrue(simpleStations.get(1).getExtras().get(0).getFree_bikes() == 10);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = InvalidListException.class)
     public void sortByFreeBikes_EmptyList() {
         List<SimpleStation> simpleStations2 =  new ArrayList<>();
         applicationController.sortByFreeBikes(simpleStations2);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = InvalidListException.class)
     public void sortByFreeBikes_Null() {
         List<SimpleStation> simpleStations2 =  null;
         applicationController.sortByFreeBikes(simpleStations2);
