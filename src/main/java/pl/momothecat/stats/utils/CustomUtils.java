@@ -1,5 +1,6 @@
 package pl.momothecat.stats.utils;
 
+import pl.momothecat.stats.utils.exceptions.InvalidElementException;
 import pl.momothecat.stats.utils.exceptions.InvalidListException;
 
 import java.util.List;
@@ -9,9 +10,9 @@ import java.util.List;
  */
 public class CustomUtils {
 
-    public static <T> void checkIfValueNotNull(T element) {
+    public static <T> void checkIfValueNotNull(T element) throws InvalidElementException {
         if (element == null)
-            throw new NullPointerException("Element must not be null");
+            throw new InvalidElementException(element,"Element must not be null");
     }
 
     public static <T> void checkIfListNotNull(List<T> elements) throws  InvalidListException{

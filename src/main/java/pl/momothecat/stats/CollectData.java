@@ -16,6 +16,7 @@ import pl.momothecat.stats.dao.StationsRepositoryTemplate;
 import pl.momothecat.stats.model.Company;
 import pl.momothecat.stats.model.SimpleExtra;
 import pl.momothecat.stats.model.SimpleStation;
+import pl.momothecat.stats.utils.exceptions.InvalidElementException;
 import pl.momothecat.stats.utils.exceptions.InvalidListException;
 
 import javax.inject.Singleton;
@@ -86,12 +87,12 @@ public class CollectData {
 
     private List<Company.StationsBean> getStationsBeen(ResponseEntity<Company> response) {
         Company company = response.getBody();
-        checkIfValueNotNull(company);
-
         List<Company.StationsBean> stations = company.getStations();
+
         try {
+            checkIfValueNotNull(company);
             checkIfListNotNull(stations);
-        } catch (InvalidListException e) {
+        } catch (Exception e) {
             logger.info(e.toString());
             e.printStackTrace();
             logger.error("Process interupted, exception occured. Returning empty list");

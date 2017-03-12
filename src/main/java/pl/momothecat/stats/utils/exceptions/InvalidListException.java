@@ -10,9 +10,8 @@ import java.util.Objects;
 public class InvalidListException extends Exception {
 
     private List<Objects> list;
-    public InvalidListException(){
 
-    }
+    public InvalidListException(){}
 
     public InvalidListException(List list, String messge){
         super(messge);

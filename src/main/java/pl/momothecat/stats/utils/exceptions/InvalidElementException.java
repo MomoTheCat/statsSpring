@@ -7,8 +7,7 @@ import java.util.Objects;
  */
 public class InvalidElementException extends  Exception{
 
-    public InvalidElementException(){
-    }
+    public InvalidElementException(){}
 
     public InvalidElementException(Object element, String message){
         super(message + element.toString());
