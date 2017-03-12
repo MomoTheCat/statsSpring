@@ -5,11 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import utils.TestUtils;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by szymon on 05.03.2017.

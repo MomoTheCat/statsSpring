@@ -6,6 +6,8 @@
 </head>
 <body>
 <h1> Station </h1>
-<p th:text="${station.name}" />
+<p th:text="'Name: ' + ${station.name}" />
+<p th:text="'Free bikes: ' + ${station.extras[0].free_bikes}" />
+<p th:text="'Free slots: ' + ${station.extras[0].empty_slots}" />
 </body>
 </html>

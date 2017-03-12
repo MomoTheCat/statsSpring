@@ -22,6 +22,9 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static pl.momothecat.stats.utils.CustomUtils.checkIfListNotNull;
+import static pl.momothecat.stats.utils.CustomUtils.checkIfValueNotNull;
+
 /**
  * Created by szymon on 04.03.2017.
  */
@@ -30,14 +33,12 @@ import java.util.concurrent.atomic.AtomicLong;
 @Singleton
 public class CollectData {
 
-    static final Logger logger = LoggerFactory.getLogger(CollectData.class);
+    private static final Logger logger = LoggerFactory.getLogger(CollectData.class);
+    private final AtomicLong counter = new AtomicLong();
+    private static ObjectMapper mapper;
 
     @Value("${bike.uri}")
     private String bikeUri;
-
-    private static ObjectMapper mapper;
-
-    private final AtomicLong counter = new AtomicLong();
 
     static {
         mapper = new ObjectMapper();
@@ -63,7 +64,14 @@ public class CollectData {
     }
 
     public List<Company.StationsBean> getRequest(String urlToRead) {
+        RestTemplate restTemplate = setupCustomMapperToRestTemplate();
+        ResponseEntity<Company> response = restTemplate.getForEntity(urlToRead, Company.class);
+        logger.info("Request status: " + response.getStatusCodeValue());
 
+        return getStationsBeen(response);
+    }
+
+    private RestTemplate setupCustomMapperToRestTemplate() {
         MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
         messageConverter.setPrettyPrint(false);
         messageConverter.setObjectMapper(mapper);
@@ -72,13 +80,7 @@ public class CollectData {
         restTemplate.getMessageConverters().removeIf(m -> m.getClass().getName()
                 .equals(MappingJackson2HttpMessageConverter.class.getName()));
         restTemplate.getMessageConverters().add(messageConverter);
-
-        ResponseEntity<Company> response = restTemplate.getForEntity(urlToRead, Company.class);
-        logger.info("Request status: " + response.getStatusCodeValue());
-
-        List<Company.StationsBean> stations = getStationsBeen(response);
-
-        return stations;
+        return restTemplate;
     }
 
     private List<Company.StationsBean> getStationsBeen(ResponseEntity<Company> response) {
@@ -90,9 +92,7 @@ public class CollectData {
         return stations;
     }
 
-
     private void saveToDatabase(List<Company.StationsBean> stations) {
-
         stations.stream()
                 .filter(Objects::nonNull)
                 .filter(station -> !repositoryTemplate.ifExistsNetworkId(station.getId()))
@@ -112,7 +112,6 @@ public class CollectData {
     }
 
     private void updateStationsData(List<Company.StationsBean> stations) {
-
         logger.info("At: " + new java.util.Date()
                 + ", updating DB for the " + counter.incrementAndGet() + " times.");
 
@@ -131,16 +130,6 @@ public class CollectData {
                 .setBike_uids(station.getExtra().getBike_uids())
                 .setNumber(station.getExtra().getNumber())
                 .build();
-    }
-
-    private <T> void checkIfValueNotNull(T element) {
-        if (element == null)
-            throw new NullPointerException("Element must not be null");
-    }
-
-    private <T> void checkIfListNotNull(List<T> elements) {
-        if (elements == null || elements.isEmpty())
-            throw new NullPointerException("List must not be null");
     }
 
 }

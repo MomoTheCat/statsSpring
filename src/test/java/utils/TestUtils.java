@@ -10,7 +10,7 @@ import static org.junit.Assert.assertNotNull;
  * Created by szymon on 05.03.2017.
  */
 public class TestUtils {
-    //Assert means must be.
+
     public static void assertNotEmptyValue(Object object) {
         for (Field field : object.getClass().getDeclaredFields()) {
             try {
