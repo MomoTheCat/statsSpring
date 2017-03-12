@@ -11,6 +11,6 @@ public class InvalidElementException extends  Exception{
     }
 
     public InvalidElementException(Object element, String message){
-        super(message+element.toString());
+        super(message + element.toString());
     }
 }
