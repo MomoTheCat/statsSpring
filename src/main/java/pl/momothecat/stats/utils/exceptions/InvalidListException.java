@@ -35,7 +35,7 @@ public class InvalidListException extends Exception {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(super.toString());
+        StringBuffer sb = new StringBuffer();
 
         if (isListNull()){
             sb.append("\nList is null");

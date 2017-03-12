@@ -68,22 +68,22 @@ public class ApplicationController {
                         .build())
                 .collect(Collectors.toList());
 
-
-        sortByFreeBikes(simpleStation);
+        try {
+            sortByFreeBikes(simpleStation);
+        } catch (InvalidListException e) {
+            logger.info(e.toString());
+            e.printStackTrace();
+            logger.error("Process interupted, exception occured.");
+            model.addAttribute("stations", Collections.emptyList());
+            return "stations";
+        }
 
         model.addAttribute("stations", simpleStation);
         return "stations";
     }
 
-    protected void sortByFreeBikes(List<SimpleStation> simpleStation) {
-        try {
-            checkIfListNotNull(simpleStation);
-        } catch (InvalidListException e) {
-            logger.info(e.toString());
-            e.printStackTrace();
-            logger.error("Process interupted, exception occured.");
-            return;
-        }
+    protected void sortByFreeBikes(List<SimpleStation> simpleStation) throws InvalidListException {
+        checkIfListNotNull(simpleStation);
 
         Collections.sort(simpleStation, new Comparator<SimpleStation>() {
             @Override

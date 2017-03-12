@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.momothecat.stats.model.SimpleExtra;
 import pl.momothecat.stats.model.SimpleStation;
+import pl.momothecat.stats.utils.exceptions.InvalidListException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,13 +57,13 @@ public class CustomUtilsTest {
         customUtils.checkIfListNotNull(simpleExtras);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = InvalidListException.class)
     public void checkIfListNotNull_Empty() throws Exception {
         List<SimpleExtra> simpleExtras2 = new ArrayList<>();
         customUtils.checkIfListNotNull(simpleExtras2);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = InvalidListException.class)
     public void checkIfListNotNull_Null() throws Exception {
         List<SimpleExtra> simpleExtras2 = null;
         customUtils.checkIfListNotNull(simpleExtras2);

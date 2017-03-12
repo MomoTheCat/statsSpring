@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
-
+import static org.hamcrest.Matchers.*;
 /**
  * Created by szymon on 12.03.2017.
  */
@@ -59,7 +59,7 @@ public class ApplicationControllerTest {
     }
 
     @Test
-    public void sortByFreeBikes() {
+    public void sortByFreeBikes() throws InvalidListException {
         assertTrue (simpleStations.get(0).getExtras().get(0).getFree_bikes() == 10);
 
         applicationController.sortByFreeBikes(simpleStations);
@@ -67,16 +67,26 @@ public class ApplicationControllerTest {
         assertTrue(simpleStations.get(1).getExtras().get(0).getFree_bikes() == 10);
     }
 
-    @Test(expected = InvalidListException.class)
+    @Test
     public void sortByFreeBikes_EmptyList() {
         List<SimpleStation> simpleStations2 =  new ArrayList<>();
-        applicationController.sortByFreeBikes(simpleStations2);
+        try {
+            applicationController.sortByFreeBikes(simpleStations2);
+            fail("Expected an InvalidListException to be thrown");
+        }catch (InvalidListException e){
+            assertThat(e.toString(),is("\nList is Empty"));
+        }
+
     }
 
-    @Test(expected = InvalidListException.class)
+    @Test
     public void sortByFreeBikes_Null() {
         List<SimpleStation> simpleStations2 =  null;
-        applicationController.sortByFreeBikes(simpleStations2);
+        try {
+            applicationController.sortByFreeBikes(simpleStations2);
+        }catch (InvalidListException e){
+            assertThat(e.toString(), is("\nList is null"));
+        }
     }
 
 }
