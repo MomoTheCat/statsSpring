@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import static pl.momothecat.stats.utils.CustomUtils.checkIfListNotNull;
+import static pl.momothecat.stats.utils.CustomUtils.sortByFreeBikes;
 
 /**
  * Created by szymon on 04.03.2017.
@@ -82,16 +83,6 @@ public class ApplicationController {
         return "stations";
     }
 
-    protected void sortByFreeBikes(List<SimpleStation> simpleStation) throws InvalidListException {
-        checkIfListNotNull(simpleStation);
 
-        Collections.sort(simpleStation, new Comparator<SimpleStation>() {
-            @Override
-            public int compare(SimpleStation o1, SimpleStation o2) {
-                return o1.getExtras().get(0).getFree_bikes() - o2.getExtras().get(0).getFree_bikes();
-            }
-        });
-        Collections.reverse(simpleStation);
-    }
 
 }
