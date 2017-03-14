@@ -59,7 +59,6 @@ public class ApplicationControllerTestIT {
     @Before
     public void setUp() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
-        MockitoAnnotations.initMocks(this);
         stationsRepository.deleteAll();
         stationsRepository.save(TestUtils.prepareSimpleStation("1",15,25,10));
         stationsRepository.save(TestUtils.prepareSimpleStation("2",10,35,25));

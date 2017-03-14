@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRule;
 import org.mockito.junit.MockitoRule;
@@ -63,6 +64,7 @@ public class ApplicationControllerTest {
     @Before
     public void setUp() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
+        MockitoAnnotations.initMocks(this);
         //Zamockować zwrotke StationsRepository
         simpleStation1= TestUtils.prepareSimpleStation("1",15,25,10);
         simpleStation2=TestUtils.prepareSimpleStation("2",10,35,25);
